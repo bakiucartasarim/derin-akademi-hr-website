@@ -205,7 +205,7 @@ export default function AdminReferences() {
               </div>
               
               <blockquote className="text-gray-700 mb-4 text-sm">
-                "{testimonial.testimonialText}"
+                &quot;{testimonial.testimonialText}&quot;
               </blockquote>
               
               <div className="flex items-center justify-between">
