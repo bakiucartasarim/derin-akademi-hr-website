@@ -1,7 +1,131 @@
+'use client'
+
 import Image from 'next/image'
 import Link from 'next/link'
+import { useState, useEffect } from 'react'
+
+interface Testimonial {
+  id: string
+  companyName: string
+  companyInitials: string
+  sector: string
+  testimonialText: string
+  authorName: string
+  authorTitle: string
+  rating: number
+  bgColor: string
+}
 
 export default function References() {
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const loadTestimonials = () => {
+      const saved = localStorage.getItem('testimonials')
+      if (saved) {
+        setTestimonials(JSON.parse(saved))
+      } else {
+        // Varsayılan referanslar
+        const defaultTestimonials: Testimonial[] = [
+          {
+            id: '1',
+            companyName: 'ABC Şirketi A.Ş.',
+            companyInitials: 'AŞ',
+            sector: 'Teknoloji Sektörü',
+            testimonialText: 'Derin Akademi ile çalışmak şirketimizin İK süreçlerinde devrim yarattı. Özellikle performans yönetimi konusundaki uzmanılıları sayesinde çalışan verimliliğimiz %40 arttı.',
+            authorName: 'Ahmet Yılmaz',
+            authorTitle: 'İK Müdürü',
+            rating: 5,
+            bgColor: 'blue'
+          },
+          {
+            id: '2',
+            companyName: 'XYZ Holding',
+            companyInitials: 'XY',
+            sector: 'Finansal Hizmetler',
+            testimonialText: 'Liderlik eğitimlerinde aldığımız hizmet mükemmeldi. Yönetici kadromuzun liderlik becerileri gözle görülür şekilde gelişti. Özellikle iletişim modülü çok faydalıydı.',
+            authorName: 'Ayşe Demir',
+            authorTitle: 'Genel Müdür',
+            rating: 5,
+            bgColor: 'green'
+          },
+          {
+            id: '3',
+            companyName: 'MNO Gıda Ltd.',
+            companyInitials: 'MN',
+            sector: 'Gıda Sanayi',
+            testimonialText: 'İşe alım süreçlerimizi yeniden yapılandırdığımız danışmanlık projesi harikaydi. Doğru aday bulma oranımız %60 arttı. Kesinlikle tavsiye ederim.',
+            authorName: 'Mehmet Özkan',
+            authorTitle: 'İK Uzmanı',
+            rating: 5,
+            bgColor: 'purple'
+          },
+          {
+            id: '4',
+            companyName: 'PQR İnşaat A.Ş.',
+            companyInitials: 'PQ',
+            sector: 'İnşaat ve Yapı',
+            testimonialText: 'Organizasyonel gelişim projemizde aldığımız danışmanlık hizmeti sayesinde şirket kültürümüzü güçlendirdik. Çalışan memnuniyeti rekor seviyede.',
+            authorName: 'Fatma Kaya',
+            authorTitle: 'İK Direktörü',
+            rating: 5,
+            bgColor: 'red'
+          },
+          {
+            id: '5',
+            companyName: 'STU Enerji Ltd.',
+            companyInitials: 'ST',
+            sector: 'Enerji Sektörü',
+            testimonialText: 'Performans yönetimi sistemi kurduktan sonra takım performansımızda önemli artış yaşadık. Eğitmen kadrosu çok deneyimli ve profesyonel.',
+            authorName: 'Ali Çelik',
+            authorTitle: 'Operasyon Müdürü',
+            rating: 4,
+            bgColor: 'indigo'
+          },
+          {
+            id: '6',
+            companyName: 'VWX Otomotiv',
+            companyInitials: 'VW',
+            sector: 'Otomotiv Sanayi',
+            testimonialText: 'İK mevzuatı konusundaki eğitimler sayesinde yasal uyum süreçlerimizi geliştirdik. Artık daha güvenle hareket edebiliyoruz.',
+            authorName: 'Zeynep Aslan',
+            authorTitle: 'Hukuk Müşaviri',
+            rating: 5,
+            bgColor: 'yellow'
+          }
+        ]
+        setTestimonials(defaultTestimonials)
+        localStorage.setItem('testimonials', JSON.stringify(defaultTestimonials))
+      }
+      setLoading(false)
+    }
+
+    loadTestimonials()
+  }, [])
+
+  const getColorClasses = (color: string) => {
+    const colorMap: { [key: string]: string } = {
+      blue: 'bg-blue-100 text-blue-600',
+      green: 'bg-green-100 text-green-600',
+      purple: 'bg-purple-100 text-purple-600',
+      red: 'bg-red-100 text-red-600',
+      indigo: 'bg-indigo-100 text-indigo-600',
+      yellow: 'bg-yellow-100 text-yellow-600'
+    }
+    return colorMap[color] || 'bg-blue-100 text-blue-600'
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Referanslar yükleniyor...</p>
+        </div>
+      </div>
+    )
+  }
   return (
     <main className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
       {/* Header */}
@@ -56,174 +180,37 @@ export default function References() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-            
-            {/* Testimonial 1 */}
-            <div className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition duration-300">
-              <div className="flex items-center mb-6">
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-                  <span className="text-blue-600 font-bold text-lg">AŞ</span>
+            {testimonials.map((testimonial) => (
+              <div key={testimonial.id} className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition duration-300">
+                <div className="flex items-center mb-6">
+                  <div className={`w-12 h-12 ${getColorClasses(testimonial.bgColor)} rounded-full flex items-center justify-center mr-4`}>
+                    <span className="font-bold text-lg">{testimonial.companyInitials}</span>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-900">{testimonial.companyName}</h3>
+                    <p className="text-gray-600 text-sm">{testimonial.sector}</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-bold text-gray-900">ABC Şirketi A.Ş.</h3>
-                  <p className="text-gray-600 text-sm">Teknoloji Sektörü</p>
-                </div>
-              </div>
-              <blockquote className="text-gray-700 mb-6">
-                &quot;Derin Akademi ile çalışmak şirketimizin İK süreçlerinde devrim yarattı. 
-                Özellikle performans yönetimi konusundaki uzmanılıları sayesinde çalışan 
-                verimliliğimiz %40 arttı.&quot;
-              </blockquote>
-              <div className="flex items-center">
-                <div className="flex text-yellow-400">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5 fill-current" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                    </svg>
-                  ))}
-                </div>
-                <span className="ml-2 text-gray-600 text-sm">- Ahmet Yılmaz, İK Müdürü</span>
-              </div>
-            </div>
-
-            {/* Testimonial 2 */}
-            <div className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition duration-300">
-              <div className="flex items-center mb-6">
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
-                  <span className="text-green-600 font-bold text-lg">XY</span>
-                </div>
-                <div>
-                  <h3 className="font-bold text-gray-900">XYZ Holding</h3>
-                  <p className="text-gray-600 text-sm">Finansal Hizmetler</p>
+                <blockquote className="text-gray-700 mb-6">
+                  &quot;{testimonial.testimonialText}&quot;
+                </blockquote>
+                <div className="flex items-center">
+                  <div className="flex text-yellow-400">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <svg key={i} className="w-5 h-5 fill-current" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                      </svg>
+                    ))}
+                    {[...Array(5 - testimonial.rating)].map((_, i) => (
+                      <svg key={i} className="w-5 h-5 text-gray-300 fill-current" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                      </svg>
+                    ))}
+                  </div>
+                  <span className="ml-2 text-gray-600 text-sm">- {testimonial.authorName}, {testimonial.authorTitle}</span>
                 </div>
               </div>
-              <blockquote className="text-gray-700 mb-6">
-                &quot;Liderlik eğitimlerinde aldığımız hizmet mükemmeldi. Yönetici kadromuzun 
-                liderlik becerileri gözle görülür şekilde gelişti. Özellikle iletişim 
-                modülü çok faydalıydı.&quot;
-              </blockquote>
-              <div className="flex items-center">
-                <div className="flex text-yellow-400">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5 fill-current" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                    </svg>
-                  ))}
-                </div>
-                <span className="ml-2 text-gray-600 text-sm">- Ayşe Demir, Genel Müdür</span>
-              </div>
-            </div>
-
-            {/* Testimonial 3 */}
-            <div className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition duration-300">
-              <div className="flex items-center mb-6">
-                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mr-4">
-                  <span className="text-purple-600 font-bold text-lg">MN</span>
-                </div>
-                <div>
-                  <h3 className="font-bold text-gray-900">MNO Gıda Ltd.</h3>
-                  <p className="text-gray-600 text-sm">Gıda Sanayi</p>
-                </div>
-              </div>
-              <blockquote className="text-gray-700 mb-6">
-                &quot;İşe alım süreçlerimizi yeniden yapılandırdığımız danışmanlık projesi 
-                harikaydi. Doğru aday bulma oranımız %60 arttı. Kesinlikle tavsiye ederim.&quot;
-              </blockquote>
-              <div className="flex items-center">
-                <div className="flex text-yellow-400">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5 fill-current" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                    </svg>
-                  ))}
-                </div>
-                <span className="ml-2 text-gray-600 text-sm">- Mehmet Özkan, İK Uzmanı</span>
-              </div>
-            </div>
-
-            {/* Testimonial 4 */}
-            <div className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition duration-300">
-              <div className="flex items-center mb-6">
-                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-4">
-                  <span className="text-red-600 font-bold text-lg">PQ</span>
-                </div>
-                <div>
-                  <h3 className="font-bold text-gray-900">PQR İnşaat A.Ş.</h3>
-                  <p className="text-gray-600 text-sm">İnşaat ve Yapı</p>
-                </div>
-              </div>
-              <blockquote className="text-gray-700 mb-6">
-                &quot;Organizasyonel gelişim projemizde aldığımız danışmanlık hizmeti sayesinde 
-                şirket kültürümüzü güçlendirdik. Çalışan memnuniyeti rekor seviyede.&quot;
-              </blockquote>
-              <div className="flex items-center">
-                <div className="flex text-yellow-400">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5 fill-current" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                    </svg>
-                  ))}
-                </div>
-                <span className="ml-2 text-gray-600 text-sm">- Fatma Kaya, İK Direktörü</span>
-              </div>
-            </div>
-
-            {/* Testimonial 5 */}
-            <div className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition duration-300">
-              <div className="flex items-center mb-6">
-                <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center mr-4">
-                  <span className="text-indigo-600 font-bold text-lg">ST</span>
-                </div>
-                <div>
-                  <h3 className="font-bold text-gray-900">STU Enerji Ltd.</h3>
-                  <p className="text-gray-600 text-sm">Enerji Sektörü</p>
-                </div>
-              </div>
-              <blockquote className="text-gray-700 mb-6">
-                &quot;Performans yönetimi sistemi kurduktan sonra takım performansımızda 
-                önemli artış yaşadık. Eğitmen kadrosu çok deneyimli ve profesyonel.&quot;
-              </blockquote>
-              <div className="flex items-center">
-                <div className="flex text-yellow-400">
-                  {[...Array(4)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5 fill-current" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                    </svg>
-                  ))}
-                  <svg className="w-5 h-5 text-gray-300 fill-current" viewBox="0 0 20 20">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                  </svg>
-                </div>
-                <span className="ml-2 text-gray-600 text-sm">- Ali Çelik, Operasyon Müdürü</span>
-              </div>
-            </div>
-
-            {/* Testimonial 6 */}
-            <div className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition duration-300">
-              <div className="flex items-center mb-6">
-                <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mr-4">
-                  <span className="text-yellow-600 font-bold text-lg">VW</span>
-                </div>
-                <div>
-                  <h3 className="font-bold text-gray-900">VWX Otomotiv</h3>
-                  <p className="text-gray-600 text-sm">Otomotiv Sanayi</p>
-                </div>
-              </div>
-              <blockquote className="text-gray-700 mb-6">
-                &quot;İK mevzuatı konusundaki eğitimler sayesinde yasal uyum süreçlerimizi 
-                geliştirdik. Artık daha güvenle hareket edebiliyoruz.&quot;
-              </blockquote>
-              <div className="flex items-center">
-                <div className="flex text-yellow-400">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5 fill-current" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                    </svg>
-                  ))}
-                </div>
-                <span className="ml-2 text-gray-600 text-sm">- Zeynep Aslan, Hukuk Müşaviri</span>
-              </div>
-            </div>
-
+            ))}
           </div>
         </div>
       </section>
