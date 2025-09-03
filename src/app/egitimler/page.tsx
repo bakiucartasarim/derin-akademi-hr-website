@@ -1,7 +1,122 @@
+'use client'
+
 import Image from 'next/image'
 import Link from 'next/link'
+import { useState, useEffect } from 'react'
+
+interface Training {
+  id: string
+  title: string
+  description: string
+  features: string[]
+  duration: string
+  iconColor: string
+}
 
 export default function Training() {
+  const [trainings, setTrainings] = useState<Training[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const loadTrainings = () => {
+      const saved = localStorage.getItem('trainings')
+      if (saved) {
+        setTrainings(JSON.parse(saved))
+      } else {
+        // Varsayılan eğitimler
+        const defaultTrainings: Training[] = [
+          {
+            id: '1',
+            title: 'Liderlik Eğitimleri',
+            description: 'Etkili liderlik becerileri kazanmak ve takım yönetiminde başarılı olmak için kapsamlı programlar.',
+            features: ['Stratejik Liderlik', 'Takım Yönetimi', 'Motivasyon Teknikleri'],
+            duration: '16 Saat • Sertifikalı',
+            iconColor: 'blue'
+          },
+          {
+            id: '2',
+            title: 'İletişim Becerileri',
+            description: 'Etkili iletişim kurma, çatışma çözme ve müzakere becerilerinizi geliştirin.',
+            features: ['Etkili İletişim Teknikleri', 'Çatışma Yönetimi', 'Müzakere Becerileri'],
+            duration: '12 Saat • Sertifikalı',
+            iconColor: 'green'
+          },
+          {
+            id: '3',
+            title: 'Performans Yönetimi',
+            description: 'Çalışan performansını değerlendirme, geliştirme ve optimize etme yöntemlerini öğrenin.',
+            features: ['Performans Değerlendirme', 'Hedef Belirleme', 'Gelişim Planları'],
+            duration: '20 Saat • Sertifikalı',
+            iconColor: 'purple'
+          },
+          {
+            id: '4',
+            title: 'İK Mevzuatı',
+            description: 'İş hukuku, sosyal güvenlik mevzuatı ve İK uygulamalarında yasal gereklilikler.',
+            features: ['İş Kanunu', 'Sosyal Güvenlik', 'İK Uygulamaları'],
+            duration: '24 Saat • Sertifikalı',
+            iconColor: 'red'
+          },
+          {
+            id: '5',
+            title: 'İşe Alım ve Seçim',
+            description: 'Doğru adayı bulma, değerlendirme ve seçim süreçlerini etkin şekilde yönetme.',
+            features: ['Aday Bulma Yöntemleri', 'Mülakat Teknikleri', 'Değerlendirme Yöntemleri'],
+            duration: '18 Saat • Sertifikalı',
+            iconColor: 'yellow'
+          },
+          {
+            id: '6',
+            title: 'Çalışan Gelişimi',
+            description: 'Çalışan potansiyelini keşfetme, geliştirme ve kariyer planlama stratejileri.',
+            features: ['Yetenek Yönetimi', 'Kariyer Planlama', 'Mentoring ve Koçluk'],
+            duration: '14 Saat • Sertifikalı',
+            iconColor: 'indigo'
+          }
+        ]
+        setTrainings(defaultTrainings)
+        localStorage.setItem('trainings', JSON.stringify(defaultTrainings))
+      }
+      setLoading(false)
+    }
+
+    loadTrainings()
+  }, [])
+
+  const getColorClasses = (color: string) => {
+    const colorMap: { [key: string]: string } = {
+      blue: 'bg-blue-100 text-blue-600',
+      green: 'bg-green-100 text-green-600',
+      purple: 'bg-purple-100 text-purple-600',
+      red: 'bg-red-100 text-red-600',
+      yellow: 'bg-yellow-100 text-yellow-600',
+      indigo: 'bg-indigo-100 text-indigo-600'
+    }
+    return colorMap[color] || 'bg-blue-100 text-blue-600'
+  }
+
+  const getTextColorClasses = (color: string) => {
+    const colorMap: { [key: string]: string } = {
+      blue: 'text-blue-600',
+      green: 'text-green-600',
+      purple: 'text-purple-600',
+      red: 'text-red-600',
+      yellow: 'text-yellow-600',
+      indigo: 'text-indigo-600'
+    }
+    return colorMap[color] || 'text-blue-600'
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Eğitimler yükleniyor...</p>
+        </div>
+      </div>
+    )
+  }
   return (
     <main className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
       {/* Header */}
@@ -56,211 +171,30 @@ export default function Training() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-            
-            {/* Liderlik Eğitimleri */}
-            <div className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition duration-300">
-              <div className="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center mb-6">
-                <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
+            {trainings.map((training) => (
+              <div key={training.id} className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition duration-300">
+                <div className={`w-16 h-16 ${getColorClasses(training.iconColor)} rounded-xl flex items-center justify-center mb-6`}>
+                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">{training.title}</h3>
+                <p className="text-gray-600 mb-6">
+                  {training.description}
+                </p>
+                <ul className="space-y-2 mb-6">
+                  {training.features.map((feature, index) => (
+                    <li key={index} className="flex items-center text-sm text-gray-600">
+                      <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+                <div className={`${getTextColorClasses(training.iconColor)} font-semibold`}>{training.duration}</div>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Liderlik Eğitimleri</h3>
-              <p className="text-gray-600 mb-6">
-                Etkili liderlik becerileri kazanmak ve takım yönetiminde başarılı olmak için kapsamlı programlar.
-              </p>
-              <ul className="space-y-2 mb-6">
-                <li className="flex items-center text-sm text-gray-600">
-                  <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  Stratejik Liderlik
-                </li>
-                <li className="flex items-center text-sm text-gray-600">
-                  <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  Takım Yönetimi
-                </li>
-                <li className="flex items-center text-sm text-gray-600">
-                  <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  Motivasyon Teknikleri
-                </li>
-              </ul>
-              <div className="text-blue-600 font-semibold">16 Saat • Sertifikalı</div>
-            </div>
-
-            {/* İletişim Becerileri */}
-            <div className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition duration-300">
-              <div className="w-16 h-16 bg-green-100 rounded-xl flex items-center justify-center mb-6">
-                <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                </svg>
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">İletişim Becerileri</h3>
-              <p className="text-gray-600 mb-6">
-                Etkili iletişim kurma, çatışma çözme ve müzakere becerilerinizi geliştirin.
-              </p>
-              <ul className="space-y-2 mb-6">
-                <li className="flex items-center text-sm text-gray-600">
-                  <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  Etkili İletişim Teknikleri
-                </li>
-                <li className="flex items-center text-sm text-gray-600">
-                  <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  Çatışma Yönetimi
-                </li>
-                <li className="flex items-center text-sm text-gray-600">
-                  <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  Müzakere Becerileri
-                </li>
-              </ul>
-              <div className="text-green-600 font-semibold">12 Saat • Sertifikalı</div>
-            </div>
-
-            {/* Performans Yönetimi */}
-            <div className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition duration-300">
-              <div className="w-16 h-16 bg-purple-100 rounded-xl flex items-center justify-center mb-6">
-                <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Performans Yönetimi</h3>
-              <p className="text-gray-600 mb-6">
-                Çalışan performansını değerlendirme, geliştirme ve optimize etme yöntemlerini öğrenin.
-              </p>
-              <ul className="space-y-2 mb-6">
-                <li className="flex items-center text-sm text-gray-600">
-                  <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  Performans Değerlendirme
-                </li>
-                <li className="flex items-center text-sm text-gray-600">
-                  <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  Hedef Belirleme
-                </li>
-                <li className="flex items-center text-sm text-gray-600">
-                  <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  Gelişim Planları
-                </li>
-              </ul>
-              <div className="text-purple-600 font-semibold">20 Saat • Sertifikalı</div>
-            </div>
-
-            {/* İK Mevzuatı */}
-            <div className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition duration-300">
-              <div className="w-16 h-16 bg-red-100 rounded-xl flex items-center justify-center mb-6">
-                <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">İK Mevzuatı</h3>
-              <p className="text-gray-600 mb-6">
-                İş hukuku, sosyal güvenlik mevzuatı ve İK uygulamalarında yasal gereklilikler.
-              </p>
-              <ul className="space-y-2 mb-6">
-                <li className="flex items-center text-sm text-gray-600">
-                  <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  İş Kanunu
-                </li>
-                <li className="flex items-center text-sm text-gray-600">
-                  <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  Sosyal Güvenlik
-                </li>
-                <li className="flex items-center text-sm text-gray-600">
-                  <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  İK Uygulamaları
-                </li>
-              </ul>
-              <div className="text-red-600 font-semibold">24 Saat • Sertifikalı</div>
-            </div>
-
-            {/* İşe Alım ve Seçim */}
-            <div className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition duration-300">
-              <div className="w-16 h-16 bg-yellow-100 rounded-xl flex items-center justify-center mb-6">
-                <svg className="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">İşe Alım ve Seçim</h3>
-              <p className="text-gray-600 mb-6">
-                Doğru adayı bulma, değerlendirme ve seçim süreçlerini etkin şekilde yönetme.
-              </p>
-              <ul className="space-y-2 mb-6">
-                <li className="flex items-center text-sm text-gray-600">
-                  <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  Aday Bulma Yöntemleri
-                </li>
-                <li className="flex items-center text-sm text-gray-600">
-                  <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  Mülakat Teknikleri
-                </li>
-                <li className="flex items-center text-sm text-gray-600">
-                  <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  Değerlendirme Yöntemleri
-                </li>
-              </ul>
-              <div className="text-yellow-600 font-semibold">18 Saat • Sertifikalı</div>
-            </div>
-
-            {/* Çalışan Gelişimi */}
-            <div className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition duration-300">
-              <div className="w-16 h-16 bg-indigo-100 rounded-xl flex items-center justify-center mb-6">
-                <svg className="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Çalışan Gelişimi</h3>
-              <p className="text-gray-600 mb-6">
-                Çalışan potansiyelini keşfetme, geliştirme ve kariyer planlama stratejileri.
-              </p>
-              <ul className="space-y-2 mb-6">
-                <li className="flex items-center text-sm text-gray-600">
-                  <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  Yetenek Yönetimi
-                </li>
-                <li className="flex items-center text-sm text-gray-600">
-                  <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  Kariyer Planlama
-                </li>
-                <li className="flex items-center text-sm text-gray-600">
-                  <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  Mentoring ve Koçluk
-                </li>
-              </ul>
-              <div className="text-indigo-600 font-semibold">14 Saat • Sertifikalı</div>
-            </div>
-
+            ))}
           </div>
         </div>
       </section>
