@@ -41,12 +41,16 @@ export default function Home() {
               Profesyonel eğitim ve danışmanlık hizmetleri ile şirketinizin insan kaynakları potansiyelini maksimuma çıkarın.
             </p>
             <div className="space-x-4">
-              <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition duration-300">
-                Hizmetlerimizi Keşfedin
-              </button>
-              <button className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-8 py-3 rounded-lg font-semibold transition duration-300">
-                İletişime Geçin
-              </button>
+              <Link href="/hizmetler">
+                <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition duration-300">
+                  Hizmetlerimizi Keşfedin
+                </button>
+              </Link>
+              <Link href="/iletisim">
+                <button className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-8 py-3 rounded-lg font-semibold transition duration-300">
+                  İletişime Geçin
+                </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -158,9 +162,11 @@ export default function Home() {
                 <p className="mb-6">
                   İhtiyaçlarınızı değerlendirmek için ücretsiz ön görüşme hizmetimizden yararlanın.
                 </p>
-                <button className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-300">
-                  Randevu Alın
-                </button>
+                <Link href="/iletisim">
+                  <button className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-300">
+                    Randevu Alın
+                  </button>
+                </Link>
               </div>
             </div>
           </div>
