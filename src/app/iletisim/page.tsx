@@ -31,36 +31,22 @@ export default function Contact() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const loadContactData = () => {
-      // İletişim bilgileri
-      const savedContact = localStorage.getItem('contactInfo')
-      if (savedContact) {
-        setContactInfo(JSON.parse(savedContact))
-      } else {
-        const defaultContact: ContactInfo = {
-          address: 'İstanbul, Türkiye',
-          addressDetail: 'Detaylı adres bilgisi için iletişime geçiniz.',
-          phone: '+90 XXX XXX XX XX',
-          phoneHours: 'Pazartesi - Cuma: 09:00 - 18:00',
-          email: 'info@derinakademi.com',
-          emailResponse: '24 saat içinde dönüş yapıyoruz',
-          workingHours: {
-            weekdays: 'Pazartesi - Cuma: 09:00 - 18:00',
-            saturday: 'Cumartesi: 10:00 - 14:00',
-            sunday: 'Pazar kapalı'
-          },
-          whatsapp: 'https://wa.me/90XXXXXXXXX'
-        }
-        setContactInfo(defaultContact)
-        localStorage.setItem('contactInfo', JSON.stringify(defaultContact))
-      }
-
-      // FAQ'lar
-      const savedFaqs = localStorage.getItem('faqs')
-      if (savedFaqs) {
-        setFaqs(JSON.parse(savedFaqs))
-      } else {
-        const defaultFaqs: FAQ[] = [
+    const defaultContact: ContactInfo = {
+      address: 'İstanbul, Türkiye',
+      addressDetail: 'Detaylı adres bilgisi için iletişime geçiniz.',
+      phone: '+90 XXX XXX XX XX',
+      phoneHours: 'Pazartesi - Cuma: 09:00 - 18:00',
+      email: 'info@derinakademi.com',
+      emailResponse: '24 saat içinde dönüş yapıyoruz',
+      workingHours: {
+        weekdays: 'Pazartesi - Cuma: 09:00 - 18:00',
+        saturday: 'Cumartesi: 10:00 - 14:00',
+        sunday: 'Pazar kapalı'
+      },
+      whatsapp: 'https://wa.me/90XXXXXXXXX'
+    }
+    
+    const defaultFaqs: FAQ[] = [
           {
             id: '1',
             question: 'Eğitim programlarınız ne kadar sürüyor?',
@@ -81,11 +67,34 @@ export default function Contact() {
             question: 'Eğitim sonrası sertifika veriliyor mu?',
             answer: 'Tüm eğitim programlarımızı başarıyla tamamlayan katılımcılara Derin Akademi sertifikası verilmektedir.'
           }
-        ]
+    ]
+    
+    const loadContactData = async () => {
+      try {
+        // İletişim bilgilerini yükle
+        const contactResponse = await fetch('/api/contact')
+        if (contactResponse.ok) {
+          const contactData = await contactResponse.json()
+          setContactInfo(contactData)
+        } else {
+          setContactInfo(defaultContact)
+        }
+        
+        // FAQ'ları yükle
+        const faqsResponse = await fetch('/api/faqs')
+        if (faqsResponse.ok) {
+          const faqsData = await faqsResponse.json()
+          setFaqs(faqsData)
+        } else {
+          setFaqs(defaultFaqs)
+        }
+      } catch (error) {
+        console.error('Error loading contact data:', error)
+        setContactInfo(defaultContact)
         setFaqs(defaultFaqs)
-        localStorage.setItem('faqs', JSON.stringify(defaultFaqs))
+      } finally {
+        setLoading(false)
       }
-      setLoading(false)
     }
 
     loadContactData()

@@ -18,13 +18,7 @@ export default function Training() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const loadTrainings = () => {
-      const saved = localStorage.getItem('trainings')
-      if (saved) {
-        setTrainings(JSON.parse(saved))
-      } else {
-        // Varsayılan eğitimler
-        const defaultTrainings: Training[] = [
+    const defaultTrainings: Training[] = [
           {
             id: '1',
             title: 'Liderlik Eğitimleri',
@@ -73,11 +67,24 @@ export default function Training() {
             duration: '14 Saat • Sertifikalı',
             iconColor: 'indigo'
           }
-        ]
+    ]
+    
+    const loadTrainings = async () => {
+      try {
+        const response = await fetch('/api/trainings')
+        if (response.ok) {
+          const data = await response.json()
+          setTrainings(data)
+        } else {
+          // Fallback to default trainings if API fails
+          setTrainings(defaultTrainings)
+        }
+      } catch (error) {
+        console.error('Error loading trainings:', error)
         setTrainings(defaultTrainings)
-        localStorage.setItem('trainings', JSON.stringify(defaultTrainings))
+      } finally {
+        setLoading(false)
       }
-      setLoading(false)
     }
 
     loadTrainings()

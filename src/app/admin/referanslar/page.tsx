@@ -54,48 +54,66 @@ export default function AdminReferences() {
     setIsAuthenticated(true)
 
     // Mevcut referansları yükle
-    loadTestimonials()
-    setLoading(false)
+    loadTestimonials().then(() => setLoading(false))
   }, [router])
 
-  const loadTestimonials = () => {
-    const saved = localStorage.getItem('testimonials')
-    if (saved) {
-      setTestimonials(JSON.parse(saved))
-    } else {
-      // Varsayılan referanslar
-      const defaultTestimonials: Testimonial[] = [
-        {
-          id: '1',
-          companyName: 'ABC Şirketi A.Ş.',
-          companyInitials: 'AŞ',
-          sector: 'Teknoloji Sektörü',
-          testimonialText: 'Derin Akademi ile çalışmak şirketimizin İK süreçlerinde devrim yarattı. Özellikle performans yönetimi konusundaki uzmanılıları sayesinde çalışan verimliliğimiz %40 arttı.',
-          authorName: 'Ahmet Yılmaz',
-          authorTitle: 'İK Müdürü',
-          rating: 5,
-          bgColor: 'blue'
-        },
-        {
-          id: '2',
-          companyName: 'XYZ Holding',
-          companyInitials: 'XY',
-          sector: 'Finansal Hizmetler',
-          testimonialText: 'Liderlik eğitimlerinde aldığımız hizmet mükemmeldi. Yönetici kadromuzun liderlik becerileri gözle görülür şekilde gelişti. Özellikle iletişim modülü çok faydalıydı.',
-          authorName: 'Ayşe Demir',
-          authorTitle: 'Genel Müdür',
-          rating: 5,
-          bgColor: 'green'
-        }
-      ]
-      setTestimonials(defaultTestimonials)
-      localStorage.setItem('testimonials', JSON.stringify(defaultTestimonials))
+  const loadTestimonials = async () => {
+    try {
+      const response = await fetch('/api/testimonials')
+      if (response.ok) {
+        const data = await response.json()
+        setTestimonials(data)
+      } else {
+        console.error('Failed to load testimonials')
+        setTestimonials([])
+      }
+    } catch (error) {
+      console.error('Error loading testimonials:', error)
+      setTestimonials([])
     }
   }
 
-  const saveTestimonials = (data: Testimonial[]) => {
-    localStorage.setItem('testimonials', JSON.stringify(data))
-    setTestimonials(data)
+  const saveTestimonial = async (testimonial: Testimonial, isEdit: boolean = false) => {
+    try {
+      const method = isEdit ? 'PUT' : 'POST'
+      const response = await fetch('/api/testimonials', {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(testimonial),
+      })
+      
+      if (response.ok) {
+        loadTestimonials()
+        return true
+      } else {
+        console.error('Failed to save testimonial')
+        return false
+      }
+    } catch (error) {
+      console.error('Error saving testimonial:', error)
+      return false
+    }
+  }
+
+  const deleteTestimonial = async (id: string) => {
+    try {
+      const response = await fetch(`/api/testimonials?id=${id}`, {
+        method: 'DELETE',
+      })
+      
+      if (response.ok) {
+        loadTestimonials()
+        return true
+      } else {
+        console.error('Failed to delete testimonial')
+        return false
+      }
+    } catch (error) {
+      console.error('Error deleting testimonial:', error)
+      return false
+    }
   }
 
   const handleLogout = () => {
@@ -103,25 +121,20 @@ export default function AdminReferences() {
     router.push('/admin')
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    const newTestimonial: Testimonial = {
+    const testimonialData: Testimonial = {
       ...formData,
-      id: editingId || Date.now().toString(),
+      id: editingId || '',
     }
 
-    let updatedTestimonials
-    if (editingId) {
-      updatedTestimonials = testimonials.map(t => 
-        t.id === editingId ? newTestimonial : t
-      )
+    const success = await saveTestimonial(testimonialData, !!editingId)
+    if (success) {
+      resetForm()
     } else {
-      updatedTestimonials = [...testimonials, newTestimonial]
+      alert('Kayıt sırasında hata oluştu!')
     }
-
-    saveTestimonials(updatedTestimonials)
-    resetForm()
   }
 
   const handleEdit = (testimonial: Testimonial) => {
@@ -130,10 +143,12 @@ export default function AdminReferences() {
     setShowModal(true)
   }
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm('Bu referansı silmek istediğinizden emin misiniz?')) {
-      const updatedTestimonials = testimonials.filter(t => t.id !== id)
-      saveTestimonials(updatedTestimonials)
+      const success = await deleteTestimonial(id)
+      if (!success) {
+        alert('Silme sırasında hata oluştu!')
+      }
     }
   }
 

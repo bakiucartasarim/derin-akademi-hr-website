@@ -21,84 +21,47 @@ export default function References() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const loadTestimonials = () => {
-      const saved = localStorage.getItem('testimonials')
-      if (saved) {
-        setTestimonials(JSON.parse(saved))
-      } else {
-        // Varsayılan referanslar
-        const defaultTestimonials: Testimonial[] = [
-          {
-            id: '1',
-            companyName: 'ABC Şirketi A.Ş.',
-            companyInitials: 'AŞ',
-            sector: 'Teknoloji Sektörü',
-            testimonialText: 'Derin Akademi ile çalışmak şirketimizin İK süreçlerinde devrim yarattı. Özellikle performans yönetimi konusundaki uzmanılıları sayesinde çalışan verimliliğimiz %40 arttı.',
-            authorName: 'Ahmet Yılmaz',
-            authorTitle: 'İK Müdürü',
-            rating: 5,
-            bgColor: 'blue'
-          },
-          {
-            id: '2',
-            companyName: 'XYZ Holding',
-            companyInitials: 'XY',
-            sector: 'Finansal Hizmetler',
-            testimonialText: 'Liderlik eğitimlerinde aldığımız hizmet mükemmeldi. Yönetici kadromuzun liderlik becerileri gözle görülür şekilde gelişti. Özellikle iletişim modülü çok faydalıydı.',
-            authorName: 'Ayşe Demir',
-            authorTitle: 'Genel Müdür',
-            rating: 5,
-            bgColor: 'green'
-          },
-          {
-            id: '3',
-            companyName: 'MNO Gıda Ltd.',
-            companyInitials: 'MN',
-            sector: 'Gıda Sanayi',
-            testimonialText: 'İşe alım süreçlerimizi yeniden yapılandırdığımız danışmanlık projesi harikaydi. Doğru aday bulma oranımız %60 arttı. Kesinlikle tavsiye ederim.',
-            authorName: 'Mehmet Özkan',
-            authorTitle: 'İK Uzmanı',
-            rating: 5,
-            bgColor: 'purple'
-          },
-          {
-            id: '4',
-            companyName: 'PQR İnşaat A.Ş.',
-            companyInitials: 'PQ',
-            sector: 'İnşaat ve Yapı',
-            testimonialText: 'Organizasyonel gelişim projemizde aldığımız danışmanlık hizmeti sayesinde şirket kültürümüzü güçlendirdik. Çalışan memnuniyeti rekor seviyede.',
-            authorName: 'Fatma Kaya',
-            authorTitle: 'İK Direktörü',
-            rating: 5,
-            bgColor: 'red'
-          },
-          {
-            id: '5',
-            companyName: 'STU Enerji Ltd.',
-            companyInitials: 'ST',
-            sector: 'Enerji Sektörü',
-            testimonialText: 'Performans yönetimi sistemi kurduktan sonra takım performansımızda önemli artış yaşadık. Eğitmen kadrosu çok deneyimli ve profesyonel.',
-            authorName: 'Ali Çelik',
-            authorTitle: 'Operasyon Müdürü',
-            rating: 4,
-            bgColor: 'indigo'
-          },
-          {
-            id: '6',
-            companyName: 'VWX Otomotiv',
-            companyInitials: 'VW',
-            sector: 'Otomotiv Sanayi',
-            testimonialText: 'İK mevzuatı konusundaki eğitimler sayesinde yasal uyum süreçlerimizi geliştirdik. Artık daha güvenle hareket edebiliyoruz.',
-            authorName: 'Zeynep Aslan',
-            authorTitle: 'Hukuk Müşaviri',
-            rating: 5,
-            bgColor: 'yellow'
-          }
-        ]
-        setTestimonials(defaultTestimonials)
-        localStorage.setItem('testimonials', JSON.stringify(defaultTestimonials))
+    const defaultTestimonials: Testimonial[] = [
+      {
+        id: '1',
+        companyName: 'ABC Şirketi A.Ş.',
+        companyInitials: 'AŞ',
+        sector: 'Teknoloji Sektörü',
+        testimonialText: 'Derin Akademi ile çalışmak şirketimizin İK süreçlerinde devrim yarattı. Özellikle performans yönetimi konusundaki uzmanılıları sayesinde çalışan verimliliğimiz %40 arttı.',
+        authorName: 'Ahmet Yılmaz',
+        authorTitle: 'İK Müdürü',
+        rating: 5,
+        bgColor: 'blue'
+      },
+      {
+        id: '2',
+        companyName: 'XYZ Holding',
+        companyInitials: 'XY',
+        sector: 'Finansal Hizmetler',
+        testimonialText: 'Liderlik eğitimlerinde aldığımız hizmet mükemmeldi. Yönetici kadromuzun liderlik becerileri gözle görülür şekilde gelişti. Özellikle iletişim modülü çok faydalıydı.',
+        authorName: 'Ayşe Demir',
+        authorTitle: 'Genel Müdür',
+        rating: 5,
+        bgColor: 'green'
       }
-      setLoading(false)
+    ]
+    
+    const loadTestimonials = async () => {
+      try {
+        const response = await fetch('/api/testimonials')
+        if (response.ok) {
+          const data = await response.json()
+          setTestimonials(data)
+        } else {
+          // Fallback to default testimonials if API fails
+          setTestimonials(defaultTestimonials)
+        }
+      } catch (error) {
+        console.error('Error loading testimonials:', error)
+        setTestimonials(defaultTestimonials)
+      } finally {
+        setLoading(false)
+      }
     }
 
     loadTestimonials()

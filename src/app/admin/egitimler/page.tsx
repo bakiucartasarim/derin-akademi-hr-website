@@ -48,74 +48,66 @@ export default function AdminTrainings() {
     setIsAuthenticated(true)
 
     // Mevcut eğitimleri yükle
-    loadTrainings()
-    setLoading(false)
+    loadTrainings().then(() => setLoading(false))
   }, [router])
 
-  const loadTrainings = () => {
-    const saved = localStorage.getItem('trainings')
-    if (saved) {
-      setTrainings(JSON.parse(saved))
-    } else {
-      // Varsayılan eğitimler
-      const defaultTrainings: Training[] = [
-        {
-          id: '1',
-          title: 'Liderlik Eğitimleri',
-          description: 'Etkili liderlik becerileri kazanmak ve takım yönetiminde başarılı olmak için kapsamlı programlar.',
-          features: ['Stratejik Liderlik', 'Takım Yönetimi', 'Motivasyon Teknikleri'],
-          duration: '16 Saat • Sertifikalı',
-          iconColor: 'blue'
-        },
-        {
-          id: '2',
-          title: 'İletişim Becerileri',
-          description: 'Etkili iletişim kurma, çatışma çözme ve müzakere becerilerinizi geliştirin.',
-          features: ['Etkili İletişim Teknikleri', 'Çatışma Yönetimi', 'Müzakere Becerileri'],
-          duration: '12 Saat • Sertifikalı',
-          iconColor: 'green'
-        },
-        {
-          id: '3',
-          title: 'Performans Yönetimi',
-          description: 'Çalışan performansını değerlendirme, geliştirme ve optimize etme yöntemlerini öğrenin.',
-          features: ['Performans Değerlendirme', 'Hedef Belirleme', 'Gelişim Planları'],
-          duration: '20 Saat • Sertifikalı',
-          iconColor: 'purple'
-        },
-        {
-          id: '4',
-          title: 'İK Mevzuatı',
-          description: 'İş hukuku, sosyal güvenlik mevzuatı ve İK uygulamalarında yasal gereklilikler.',
-          features: ['İş Kanunu', 'Sosyal Güvenlik', 'İK Uygulamaları'],
-          duration: '24 Saat • Sertifikalı',
-          iconColor: 'red'
-        },
-        {
-          id: '5',
-          title: 'İşe Alım ve Seçim',
-          description: 'Doğru adayı bulma, değerlendirme ve seçim süreçlerini etkin şekilde yönetme.',
-          features: ['Aday Bulma Yöntemleri', 'Mülakat Teknikleri', 'Değerlendirme Yöntemleri'],
-          duration: '18 Saat • Sertifikalı',
-          iconColor: 'yellow'
-        },
-        {
-          id: '6',
-          title: 'Çalışan Gelişimi',
-          description: 'Çalışan potansiyelini keşfetme, geliştirme ve kariyer planlama stratejileri.',
-          features: ['Yetenek Yönetimi', 'Kariyer Planlama', 'Mentoring ve Koçluk'],
-          duration: '14 Saat • Sertifikalı',
-          iconColor: 'indigo'
-        }
-      ]
-      setTrainings(defaultTrainings)
-      localStorage.setItem('trainings', JSON.stringify(defaultTrainings))
+  const loadTrainings = async () => {
+    try {
+      const response = await fetch('/api/trainings')
+      if (response.ok) {
+        const data = await response.json()
+        setTrainings(data)
+      } else {
+        console.error('Failed to load trainings')
+        setTrainings([])
+      }
+    } catch (error) {
+      console.error('Error loading trainings:', error)
+      setTrainings([])
     }
   }
 
-  const saveTrainings = (data: Training[]) => {
-    localStorage.setItem('trainings', JSON.stringify(data))
-    setTrainings(data)
+  const saveTraining = async (training: Training, isEdit: boolean = false) => {
+    try {
+      const method = isEdit ? 'PUT' : 'POST'
+      const response = await fetch('/api/trainings', {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(training),
+      })
+      
+      if (response.ok) {
+        loadTrainings()
+        return true
+      } else {
+        console.error('Failed to save training')
+        return false
+      }
+    } catch (error) {
+      console.error('Error saving training:', error)
+      return false
+    }
+  }
+
+  const deleteTraining = async (id: string) => {
+    try {
+      const response = await fetch(`/api/trainings?id=${id}`, {
+        method: 'DELETE',
+      })
+      
+      if (response.ok) {
+        loadTrainings()
+        return true
+      } else {
+        console.error('Failed to delete training')
+        return false
+      }
+    } catch (error) {
+      console.error('Error deleting training:', error)
+      return false
+    }
   }
 
   const handleLogout = () => {
@@ -123,26 +115,21 @@ export default function AdminTrainings() {
     router.push('/admin')
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    const newTraining: Training = {
+    const trainingData: Training = {
       ...formData,
-      id: editingId || Date.now().toString(),
+      id: editingId || '',
       features: formData.features.filter(f => f.trim() !== '')
     }
 
-    let updatedTrainings
-    if (editingId) {
-      updatedTrainings = trainings.map(t => 
-        t.id === editingId ? newTraining : t
-      )
+    const success = await saveTraining(trainingData, !!editingId)
+    if (success) {
+      resetForm()
     } else {
-      updatedTrainings = [...trainings, newTraining]
+      alert('Kayıt sırasında hata oluştu!')
     }
-
-    saveTrainings(updatedTrainings)
-    resetForm()
   }
 
   const handleEdit = (training: Training) => {
@@ -154,10 +141,12 @@ export default function AdminTrainings() {
     setShowModal(true)
   }
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm('Bu eğitimi silmek istediğinizden emin misiniz?')) {
-      const updatedTrainings = trainings.filter(t => t.id !== id)
-      saveTrainings(updatedTrainings)
+      const success = await deleteTraining(id)
+      if (!success) {
+        alert('Silme sırasında hata oluştu!')
+      }
     }
   }
 

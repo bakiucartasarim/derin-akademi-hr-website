@@ -62,74 +62,97 @@ export default function AdminContact() {
     setIsAuthenticated(true)
 
     // Mevcut verileri yükle
-    loadContactData()
-    setLoading(false)
+    loadContactData().then(() => setLoading(false))
   }, [router])
 
-  const loadContactData = () => {
-    // İletişim bilgileri
-    const savedContact = localStorage.getItem('contactInfo')
-    if (savedContact) {
-      setContactInfo(JSON.parse(savedContact))
-    } else {
-      const defaultContact: ContactInfo = {
-        address: 'İstanbul, Türkiye',
-        addressDetail: 'Detaylı adres bilgisi için iletişime geçiniz.',
-        phone: '+90 XXX XXX XX XX',
-        phoneHours: 'Pazartesi - Cuma: 09:00 - 18:00',
-        email: 'info@derinakademi.com',
-        emailResponse: '24 saat içinde dönüş yapıyoruz',
-        workingHours: {
-          weekdays: 'Pazartesi - Cuma: 09:00 - 18:00',
-          saturday: 'Cumartesi: 10:00 - 14:00',
-          sunday: 'Pazar kapalı'
-        },
-        whatsapp: 'https://wa.me/90XXXXXXXXX'
+  const loadContactData = async () => {
+    // İletişim bilgileri yükle
+    try {
+      const contactResponse = await fetch('/api/contact')
+      if (contactResponse.ok) {
+        const contactData = await contactResponse.json()
+        setContactInfo(contactData)
       }
-      setContactInfo(defaultContact)
-      localStorage.setItem('contactInfo', JSON.stringify(defaultContact))
+    } catch (error) {
+      console.error('Error loading contact info:', error)
     }
 
-    // FAQ'lar
-    const savedFaqs = localStorage.getItem('faqs')
-    if (savedFaqs) {
-      setFaqs(JSON.parse(savedFaqs))
-    } else {
-      const defaultFaqs: FAQ[] = [
-        {
-          id: '1',
-          question: 'Eğitim programlarınız ne kadar sürüyor?',
-          answer: 'Eğitim programlarımızın süreleri içeriklerine göre değişmektedir. Temel eğitimlerimiz 8-12 saat, kapsamlı programlarımız ise 16-24 saat arasındadır. Detaylı bilgi için iletişime geçebilirsiniz.'
-        },
-        {
-          id: '2',
-          question: 'Şirket içi eğitim hizmeti veriyor musunuz?',
-          answer: 'Evet, şirket içi eğitim hizmeti vermekteyiz. İhtiyaçlarınıza özel eğitim programları hazırlayarak ekibinize özel çözümler sunabiliriz.'
-        },
-        {
-          id: '3',
-          question: 'Danışmanlık süreçleriniz nasıl işliyor?',
-          answer: 'Öncelikle ücretsiz bir ön görüşme yapıyoruz. Ardından ihtiyaç analizi gerçekleştiriyor ve size özel çözüm önerileri sunuyoruz. Proje boyunca sürekli destek ve takip sağlıyoruz.'
-        },
-        {
-          id: '4',
-          question: 'Eğitim sonrası sertifika veriliyor mu?',
-          answer: 'Tüm eğitim programlarımızı başarıyla tamamlayan katılımcılara Derin Akademi sertifikası verilmektedir.'
-        }
-      ]
-      setFaqs(defaultFaqs)
-      localStorage.setItem('faqs', JSON.stringify(defaultFaqs))
+    // FAQ'ları yükle
+    try {
+      const faqsResponse = await fetch('/api/faqs')
+      if (faqsResponse.ok) {
+        const faqsData = await faqsResponse.json()
+        setFaqs(faqsData)
+      }
+    } catch (error) {
+      console.error('Error loading FAQs:', error)
     }
   }
 
-  const saveContactInfo = (data: ContactInfo) => {
-    localStorage.setItem('contactInfo', JSON.stringify(data))
-    setContactInfo(data)
+  const saveContactInfo = async (data: ContactInfo) => {
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+      
+      if (response.ok) {
+        setContactInfo(data)
+        return true
+      } else {
+        console.error('Failed to save contact info')
+        return false
+      }
+    } catch (error) {
+      console.error('Error saving contact info:', error)
+      return false
+    }
   }
 
-  const saveFaqs = (data: FAQ[]) => {
-    localStorage.setItem('faqs', JSON.stringify(data))
-    setFaqs(data)
+  const saveFAQ = async (faq: FAQ, isEdit: boolean = false) => {
+    try {
+      const method = isEdit ? 'PUT' : 'POST'
+      const response = await fetch('/api/faqs', {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(faq),
+      })
+      
+      if (response.ok) {
+        loadContactData()
+        return true
+      } else {
+        console.error('Failed to save FAQ')
+        return false
+      }
+    } catch (error) {
+      console.error('Error saving FAQ:', error)
+      return false
+    }
+  }
+
+  const deleteFAQ = async (id: string) => {
+    try {
+      const response = await fetch(`/api/faqs?id=${id}`, {
+        method: 'DELETE',
+      })
+      
+      if (response.ok) {
+        loadContactData()
+        return true
+      } else {
+        console.error('Failed to delete FAQ')
+        return false
+      }
+    } catch (error) {
+      console.error('Error deleting FAQ:', error)
+      return false
+    }
   }
 
   const handleLogout = () => {
@@ -137,31 +160,30 @@ export default function AdminContact() {
     router.push('/admin')
   }
 
-  const handleContactSubmit = (e: React.FormEvent) => {
+  const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    saveContactInfo(contactInfo)
-    alert('İletişim bilgileri güncellendi!')
+    const success = await saveContactInfo(contactInfo)
+    if (success) {
+      alert('İletişim bilgileri güncellendi!')
+    } else {
+      alert('Güncelleme sırasında hata oluştu!')
+    }
   }
 
-  const handleFaqSubmit = (e: React.FormEvent) => {
+  const handleFaqSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    const newFaq: FAQ = {
+    const faqData: FAQ = {
       ...faqFormData,
-      id: editingFaqId || Date.now().toString(),
+      id: editingFaqId || '',
     }
 
-    let updatedFaqs
-    if (editingFaqId) {
-      updatedFaqs = faqs.map(f => 
-        f.id === editingFaqId ? newFaq : f
-      )
+    const success = await saveFAQ(faqData, !!editingFaqId)
+    if (success) {
+      resetFaqForm()
     } else {
-      updatedFaqs = [...faqs, newFaq]
+      alert('Kayıt sırasında hata oluştu!')
     }
-
-    saveFaqs(updatedFaqs)
-    resetFaqForm()
   }
 
   const handleEditFaq = (faq: FAQ) => {
@@ -173,10 +195,12 @@ export default function AdminContact() {
     setShowFaqModal(true)
   }
 
-  const handleDeleteFaq = (id: string) => {
+  const handleDeleteFaq = async (id: string) => {
     if (confirm('Bu FAQ\'ı silmek istediğinizden emin misiniz?')) {
-      const updatedFaqs = faqs.filter(f => f.id !== id)
-      saveFaqs(updatedFaqs)
+      const success = await deleteFAQ(id)
+      if (!success) {
+        alert('Silme sırasında hata oluştu!')
+      }
     }
   }
 

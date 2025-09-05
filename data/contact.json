@@ -1,0 +1,14 @@
+{
+  "address": "İstanbul, Türkiye",
+  "addressDetail": "Detaylı adres bilgisi için iletişime geçiniz.",
+  "phone": "+90 XXX XXX XX XX",
+  "phoneHours": "Pazartesi - Cuma: 09:00 - 18:00",
+  "email": "info@derinakademi.com",
+  "emailResponse": "24 saat içinde dönüş yapıyoruz",
+  "workingHours": {
+    "weekdays": "Pazartesi - Cuma: 09:00 - 18:00",
+    "saturday": "Cumartesi: 10:00 - 14:00",
+    "sunday": "Pazar kapalı"
+  },
+  "whatsapp": "https://wa.me/90XXXXXXXXX"
+}
