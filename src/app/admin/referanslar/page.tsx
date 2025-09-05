@@ -180,6 +180,12 @@ export default function AdminReferences() {
               Eğitimler
             </button>
             <button
+              onClick={() => router.push('/admin/iletisim')}
+              className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700"
+            >
+              İletişim
+            </button>
+            <button
               onClick={() => router.push('/referanslar')}
               className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
             >

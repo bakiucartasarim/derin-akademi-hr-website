@@ -1,7 +1,110 @@
+'use client'
+
 import Image from 'next/image'
 import Link from 'next/link'
+import { useState, useEffect } from 'react'
+
+interface ContactInfo {
+  address: string
+  addressDetail: string
+  phone: string
+  phoneHours: string
+  email: string
+  emailResponse: string
+  workingHours: {
+    weekdays: string
+    saturday: string
+    sunday: string
+  }
+  whatsapp: string
+}
+
+interface FAQ {
+  id: string
+  question: string
+  answer: string
+}
 
 export default function Contact() {
+  const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null)
+  const [faqs, setFaqs] = useState<FAQ[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const loadContactData = () => {
+      // İletişim bilgileri
+      const savedContact = localStorage.getItem('contactInfo')
+      if (savedContact) {
+        setContactInfo(JSON.parse(savedContact))
+      } else {
+        const defaultContact: ContactInfo = {
+          address: 'İstanbul, Türkiye',
+          addressDetail: 'Detaylı adres bilgisi için iletişime geçiniz.',
+          phone: '+90 XXX XXX XX XX',
+          phoneHours: 'Pazartesi - Cuma: 09:00 - 18:00',
+          email: 'info@derinakademi.com',
+          emailResponse: '24 saat içinde dönüş yapıyoruz',
+          workingHours: {
+            weekdays: 'Pazartesi - Cuma: 09:00 - 18:00',
+            saturday: 'Cumartesi: 10:00 - 14:00',
+            sunday: 'Pazar kapalı'
+          },
+          whatsapp: 'https://wa.me/90XXXXXXXXX'
+        }
+        setContactInfo(defaultContact)
+        localStorage.setItem('contactInfo', JSON.stringify(defaultContact))
+      }
+
+      // FAQ'lar
+      const savedFaqs = localStorage.getItem('faqs')
+      if (savedFaqs) {
+        setFaqs(JSON.parse(savedFaqs))
+      } else {
+        const defaultFaqs: FAQ[] = [
+          {
+            id: '1',
+            question: 'Eğitim programlarınız ne kadar sürüyor?',
+            answer: 'Eğitim programlarımızın süreleri içeriklerine göre değişmektedir. Temel eğitimlerimiz 8-12 saat, kapsamlı programlarımız ise 16-24 saat arasındadır. Detaylı bilgi için iletişime geçebilirsiniz.'
+          },
+          {
+            id: '2',
+            question: 'Şirket içi eğitim hizmeti veriyor musunuz?',
+            answer: 'Evet, şirket içi eğitim hizmeti vermekteyiz. İhtiyaçlarınıza özel eğitim programları hazırlayarak ekibinize özel çözümler sunabiliriz.'
+          },
+          {
+            id: '3',
+            question: 'Danışmanlık süreçleriniz nasıl işliyor?',
+            answer: 'Öncelikle ücretsiz bir ön görüşme yapıyoruz. Ardından ihtiyaç analizi gerçekleştiriyor ve size özel çözüm önerileri sunuyoruz. Proje boyunca sürekli destek ve takip sağlıyoruz.'
+          },
+          {
+            id: '4',
+            question: 'Eğitim sonrası sertifika veriliyor mu?',
+            answer: 'Tüm eğitim programlarımızı başarıyla tamamlayan katılımcılara Derin Akademi sertifikası verilmektedir.'
+          }
+        ]
+        setFaqs(defaultFaqs)
+        localStorage.setItem('faqs', JSON.stringify(defaultFaqs))
+      }
+      setLoading(false)
+    }
+
+    loadContactData()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">İletişim bilgileri yükleniyor...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!contactInfo) {
+    return <div>Veri yüklenemiyor...</div>
+  }
   return (
     <main className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
       {/* Header */}
@@ -197,8 +300,8 @@ export default function Contact() {
                   <div>
                     <h3 className="text-xl font-semibold text-gray-900 mb-2">Adres</h3>
                     <p className="text-gray-600">
-                      İstanbul, Türkiye<br />
-                      Detaylı adres bilgisi için iletişime geçiniz.
+                      {contactInfo.address}<br />
+                      {contactInfo.addressDetail}
                     </p>
                   </div>
                 </div>
@@ -212,8 +315,8 @@ export default function Contact() {
                   <div>
                     <h3 className="text-xl font-semibold text-gray-900 mb-2">Telefon</h3>
                     <p className="text-gray-600">
-                      +90 XXX XXX XX XX<br />
-                      <span className="text-sm text-gray-500">Pazartesi - Cuma: 09:00 - 18:00</span>
+                      {contactInfo.phone}<br />
+                      <span className="text-sm text-gray-500">{contactInfo.phoneHours}</span>
                     </p>
                   </div>
                 </div>
@@ -227,8 +330,8 @@ export default function Contact() {
                   <div>
                     <h3 className="text-xl font-semibold text-gray-900 mb-2">E-posta</h3>
                     <p className="text-gray-600">
-                      info@derinakademi.com<br />
-                      <span className="text-sm text-gray-500">24 saat içinde dönüş yapıyoruz</span>
+                      {contactInfo.email}<br />
+                      <span className="text-sm text-gray-500">{contactInfo.emailResponse}</span>
                     </p>
                   </div>
                 </div>
@@ -242,9 +345,9 @@ export default function Contact() {
                   <div>
                     <h3 className="text-xl font-semibold text-gray-900 mb-2">Çalışma Saatleri</h3>
                     <p className="text-gray-600">
-                      Pazartesi - Cuma: 09:00 - 18:00<br />
-                      Cumartesi: 10:00 - 14:00<br />
-                      <span className="text-sm text-gray-500">Pazar kapalı</span>
+                      {contactInfo.workingHours.weekdays}<br />
+                      {contactInfo.workingHours.saturday}<br />
+                      <span className="text-sm text-gray-500">{contactInfo.workingHours.sunday}</span>
                     </p>
                   </div>
                 </div>
@@ -259,7 +362,7 @@ export default function Contact() {
                   Acil durumlar için WhatsApp üzerinden bize ulaşabilirsiniz.
                 </p>
                 <a
-                  href="https://wa.me/90XXXXXXXXX"
+                  href={contactInfo.whatsapp}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold transition duration-300"
@@ -288,47 +391,16 @@ export default function Contact() {
           </div>
 
           <div className="space-y-8">
-            <div className="bg-white rounded-xl p-8 shadow-lg">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">
-                Eğitim programlarınız ne kadar sürüyor?
-              </h3>
-              <p className="text-gray-600">
-                Eğitim programlarımızın süreleri içeriklerine göre değişmektedir. 
-                Temel eğitimlerimiz 8-12 saat, kapsamlı programlarımız ise 16-24 saat arasındadır. 
-                Detaylı bilgi için iletişime geçebilirsiniz.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-xl p-8 shadow-lg">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">
-                Şirket içi eğitim hizmeti veriyor musunuz?
-              </h3>
-              <p className="text-gray-600">
-                Evet, şirket içi eğitim hizmeti vermekteyiz. İhtiyaçlarınıza özel 
-                eğitim programları hazırlayarak ekibinize özel çözümler sunabiliriz.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-xl p-8 shadow-lg">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">
-                Danışmanlık süreçleriniz nasıl işliyor?
-              </h3>
-              <p className="text-gray-600">
-                Öncelikle ücretsiz bir ön görüşme yapıyoruz. Ardından ihtiyaç analizi 
-                gerçekleştiriyor ve size özel çözüm önerileri sunuyoruz. Proje boyunca 
-                sürekli destek ve takip sağlıyoruz.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-xl p-8 shadow-lg">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">
-                Eğitim sonrası sertifika veriliyor mu?
-              </h3>
-              <p className="text-gray-600">
-                Tüm eğitim programlarımızı başarıyla tamamlayan katılımcılara 
-                Derin Akademi sertifikası verilmektedir.
-              </p>
-            </div>
+            {faqs.map((faq) => (
+              <div key={faq.id} className="bg-white rounded-xl p-8 shadow-lg">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">
+                  {faq.question}
+                </h3>
+                <p className="text-gray-600">
+                  {faq.answer}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -363,9 +435,9 @@ export default function Contact() {
             <div>
               <h4 className="text-lg font-semibold mb-4">İletişim</h4>
               <ul className="space-y-2 text-gray-400">
-                <li>info@derinakademi.com</li>
-                <li>+90 XXX XXX XX XX</li>
-                <li>İstanbul, Türkiye</li>
+                <li>{contactInfo.email}</li>
+                <li>{contactInfo.phone}</li>
+                <li>{contactInfo.address}</li>
               </ul>
             </div>
           </div>
