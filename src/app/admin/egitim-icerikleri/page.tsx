@@ -322,7 +322,7 @@ export default function AdminLinkedInContents() {
                     required
                   />
                   <p className="text-xs text-gray-500 mt-1">
-                    LinkedIn post URL'ini buraya yapıştırın. Embed URL otomatik oluşturulacak.
+                    LinkedIn post URL&apos;ini buraya yapıştırın. Embed URL otomatik oluşturulacak.
                   </p>
                 </div>
 
@@ -336,7 +336,7 @@ export default function AdminLinkedInContents() {
                     placeholder="Otomatik oluşturulacak, elle de girebilirsiniz"
                   />
                   <p className="text-xs text-gray-500 mt-1">
-                    Boş bırakırsanız LinkedIn URL'inden otomatik oluşturulur.
+                    Boş bırakırsanız LinkedIn URL&apos;inden otomatik oluşturulur.
                   </p>
                 </div>
 
