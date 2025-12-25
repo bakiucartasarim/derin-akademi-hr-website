@@ -125,18 +125,18 @@ export default function EgitimIcerikleri() {
               <p className="text-gray-400">Yakında yeni içerikler eklenecek...</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-8 max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {contents.map((content) => (
               <div key={content.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition duration-300">
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{content.title}</h3>
-                  <p className="text-gray-600 mb-4 text-sm">{content.description}</p>
+                <div className="p-4">
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">{content.title}</h3>
+                  <p className="text-gray-600 mb-3 text-sm line-clamp-2">{content.description}</p>
 
                   {/* LinkedIn Embed */}
-                  <div className="linkedin-embed-container mb-4">
+                  <div className="linkedin-embed-container mb-3">
                     <iframe
                       src={content.embedUrl}
-                      height="500"
+                      height="350"
                       width="100%"
                       frameBorder="0"
                       allowFullScreen
