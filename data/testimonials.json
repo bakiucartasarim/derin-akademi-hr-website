@@ -1,0 +1,24 @@
+[
+  {
+    "id": "1",
+    "companyName": "ABC Şirketi A.Ş.",
+    "companyInitials": "AŞ",
+    "sector": "Teknoloji Sektörü",
+    "testimonialText": "Derin Akademi ile çalışmak şirketimizin İK süreçlerinde devrim yarattı. Özellikle performans yönetimi konusundaki uzmanlıkları sayesinde çalışan verimliliğimiz %40 arttı.",
+    "authorName": "Ahmet Yılmaz",
+    "authorTitle": "İK Müdürü",
+    "rating": 5,
+    "bgColor": "blue"
+  },
+  {
+    "id": "2",
+    "companyName": "XYZ Holding",
+    "companyInitials": "XY",
+    "sector": "Finansal Hizmetler",
+    "testimonialText": "Liderlik eğitimlerinde aldığımız hizmet mükemmeldi. Yönetici kadromuzun liderlik becerileri gözle görülür şekilde gelişti. Özellikle iletişim modülü çok faydalıydı.",
+    "authorName": "Ayşe Demir",
+    "authorTitle": "Genel Müdür",
+    "rating": 5,
+    "bgColor": "green"
+  }
+]
