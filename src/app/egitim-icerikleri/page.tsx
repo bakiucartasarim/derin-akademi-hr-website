@@ -93,29 +93,15 @@ export default function EgitimIcerikleri() {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-r from-green-600 to-blue-600 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Eğitim İçerikleri
-            </h1>
-            <p className="text-xl mb-8 max-w-3xl mx-auto">
-              LinkedIn'de paylaştığımız eğitim videoları ve içeriklerimiz
-            </p>
-          </div>
-        </div>
-      </section>
-
       {/* Content Section */}
-      <section className="py-16">
+      <section className="py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Video İçeriklerimiz
+          <div className="text-center mb-8">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+              Eğitim İçerikleri
             </h2>
-            <p className="text-lg text-gray-600">
-              İnsan kaynakları ve eğitim alanında hazırladığımız video içerikleri
+            <p className="text-sm text-gray-600">
+              LinkedIn'de paylaştığımız eğitim videoları
             </p>
           </div>
 
@@ -128,15 +114,15 @@ export default function EgitimIcerikleri() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {contents.map((content) => (
               <div key={content.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition duration-300">
-                <div className="p-4">
-                  <h3 className="text-lg font-bold text-gray-900 mb-2">{content.title}</h3>
-                  <p className="text-gray-600 mb-3 text-sm line-clamp-2">{content.description}</p>
+                <div className="p-3">
+                  <h3 className="text-base font-bold text-gray-900 mb-1.5">{content.title}</h3>
+                  <p className="text-gray-600 mb-2 text-xs line-clamp-2">{content.description}</p>
 
                   {/* LinkedIn Embed */}
-                  <div className="linkedin-embed-container mb-3">
+                  <div className="linkedin-embed-container mb-2">
                     <iframe
                       src={content.embedUrl}
-                      height="350"
+                      height="280"
                       width="100%"
                       frameBorder="0"
                       allowFullScreen
@@ -150,9 +136,9 @@ export default function EgitimIcerikleri() {
                     href={content.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300 text-sm"
+                    className="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300 text-xs"
                   >
-                    <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-3 h-3 mr-1.5" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
                     </svg>
                     LinkedIn'de Görüntüle
