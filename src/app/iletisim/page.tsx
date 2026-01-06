@@ -20,7 +20,7 @@ export default function Contact() {
         <nav className="absolute top-0 right-0 p-8 z-20">
           <ul className="flex space-x-8 text-white text-base font-medium">
             <li>
-              <Link href="/yaklasimimiz" className="hover:text-gray-200 transition-colors">
+              <Link href="/" className="hover:text-gray-200 transition-colors">
                 Yaklaşımımız
               </Link>
             </li>
