@@ -1,0 +1,22 @@
+[
+  {
+    "id": "1",
+    "question": "Eğitim programlarınız ne kadar sürüyor?",
+    "answer": "Eğitim programlarımızın süreleri içeriklerine göre değişmektedir. Temel eğitimlerimiz 8-12 saat, kapsamlı programlarımız ise 16-24 saat arasındadır. Detaylı bilgi için iletişime geçebilirsiniz."
+  },
+  {
+    "id": "2",
+    "question": "Şirket içi eğitim hizmeti veriyor musunuz?",
+    "answer": "Evet, şirket içi eğitim hizmeti vermekteyiz. İhtiyaçlarınıza özel eğitim programları hazırlayarak ekibinize özel çözümler sunabiliriz."
+  },
+  {
+    "id": "3",
+    "question": "Danışmanlık süreçleriniz nasıl işliyor?",
+    "answer": "Öncelikle ücretsiz bir ön görüşme yapıyoruz. Ardından ihtiyaç analizi gerçekleştiriyor ve size özel çözüm önerileri sunuyoruz. Proje boyunca sürekli destek ve takip sağlıyoruz."
+  },
+  {
+    "id": "4",
+    "question": "Eğitim sonrası sertifika veriliyor mu?",
+    "answer": "Tüm eğitim programlarımızı başarıyla tamamlayan katılımcılara Derin Akademi sertifikası verilmektedir."
+  }
+]
