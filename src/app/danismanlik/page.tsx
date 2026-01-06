@@ -27,7 +27,7 @@ export default function Danismanlik() {
     window.addEventListener('scroll', handleScroll)
     handleScroll() // Initial check
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [sections])
 
   const handleArrowClick = () => {
     if (currentSection >= sections.length - 1) {
@@ -144,7 +144,7 @@ export default function Danismanlik() {
                 Bu Danışmanlık Ne Değildir?
               </h2>
               <p className="text-xl mb-8 font-light leading-relaxed">
-                Derin Akademi'nin danışmanlık yaklaşımı, alışılmış İK danışmanlığı kalıplarından bilinçli olarak ayrılır.
+                Derin Akademi&apos;nin danışmanlık yaklaşımı, alışılmış İK danışmanlığı kalıplarından bilinçli olarak ayrılır.
               </p>
 
               <div className="space-y-6">
@@ -196,7 +196,7 @@ export default function Danismanlik() {
                 </li>
                 <li className="flex items-start">
                   <span className="mr-3 mt-1">•</span>
-                  <span className="font-light">Eğitimi tek başına "çözüm" olarak konumlandırmayız.</span>
+                  <span className="font-light">Eğitimi tek başına &quot;çözüm&quot; olarak konumlandırmayız.</span>
                 </li>
                 <li className="flex items-start">
                   <span className="mr-3 mt-1">•</span>
@@ -246,7 +246,7 @@ export default function Danismanlik() {
               </ul>
 
               <p className="text-lg font-light mt-8 leading-relaxed">
-                Bu nedenle danışmanlık sürecimiz; sadece İK'yı değil, <strong className="font-semibold">karar veren tüm yönetim kademelerini</strong> kapsar.
+                Bu nedenle danışmanlık sürecimiz; sadece İK&apos;yı değil, <strong className="font-semibold">karar veren tüm yönetim kademelerini</strong> kapsar.
               </p>
             </div>
           </div>
@@ -312,7 +312,7 @@ export default function Danismanlik() {
           {/* Quote */}
           <div className="mt-16 border-l-4 border-[#5B9BD5] pl-6">
             <p className="text-xl text-white font-light italic leading-relaxed">
-              "Bizim için danışmanlık, doğru dokümanı üretmek değil, doğru kararların tekrar edilebilir hale gelmesini sağlamaktır."
+              &quot;Bizim için danışmanlık, doğru dokümanı üretmek değil, doğru kararların tekrar edilebilir hale gelmesini sağlamaktır.&quot;
             </p>
           </div>
         </div>

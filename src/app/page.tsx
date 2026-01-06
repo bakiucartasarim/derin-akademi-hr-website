@@ -198,7 +198,7 @@ export default function Home() {
             {/* Card 4 */}
             <div className="border-2 border-white/30 rounded-lg p-8 hover:border-white/50 transition-colors">
               <p className="text-xl text-white font-light">
-                Mülakat sonunda 'iyi hissettim' yeterli bir karar kriteri mi?
+                Mülakat sonunda &apos;iyi hissettim&apos; yeterli bir karar kriteri mi?
               </p>
             </div>
 

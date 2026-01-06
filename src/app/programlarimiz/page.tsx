@@ -27,7 +27,7 @@ export default function Programlarimiz() {
     window.addEventListener('scroll', handleScroll)
     handleScroll() // Initial check
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [sections])
 
   const handleArrowClick = () => {
     if (currentSection >= sections.length - 1) {
@@ -280,7 +280,7 @@ export default function Programlarimiz() {
               <ul className="space-y-3 text-white/90 font-light">
                 <li className="flex items-start">
                   <span className="mr-3">•</span>
-                  <span>"İyi çalışıyor, ama yönetici olur mu?" belirsizliği</span>
+                  <span>&quot;İyi çalışıyor, ama yönetici olur mu?&quot; belirsizliği</span>
                 </li>
                 <li className="flex items-start">
                   <span className="mr-3">•</span>
@@ -356,7 +356,7 @@ export default function Programlarimiz() {
                 </li>
                 <li className="flex items-start">
                   <span className="mr-3">•</span>
-                  <span>"Neye göre değerlendirildim?" sorusu</span>
+                  <span>&quot;Neye göre değerlendirildim?&quot; sorusu</span>
                 </li>
                 <li className="flex items-start">
                   <span className="mr-3">•</span>
@@ -435,7 +435,7 @@ export default function Programlarimiz() {
                 </li>
                 <li className="flex items-start">
                   <span className="mr-3">•</span>
-                  <span>"Eşit mi, adil mi?" karmaşası</span>
+                  <span>&quot;Eşit mi, adil mi?&quot; karmaşası</span>
                 </li>
               </ul>
             </div>
